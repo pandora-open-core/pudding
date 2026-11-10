@@ -1,0 +1,24 @@
+[package]
+name = "pudding"
+version = "0.2.0-rc.1"
+edition = "2021"
+license = "MPL-2.0"
+description = "Runtime consistency checks and finite-support transport tools for machine learning"
+readme = "README.md"
+repository = "https://github.com/pandora-open-core/pudding"
+publish = false
+authors = ["Liam Dziga Douglas Giles"]
+include = [
+  "/src/**", "/tests/**", "/examples/**", "/Cargo.toml", "/Cargo.lock",
+  "/README.md", "/LICENSE", "/VERSION", "/.containerignore", "/.dockerignore", "/PROVENANCE.md", "/rust-toolchain.toml",
+  "/CHANGELOG.md", "/SECURITY.md", "/CONTRIBUTING.md", "/Containerfile", "/Containerfile.proofs",
+  "/docs/**", "/scripts/**", "/elan-version", "/elan-checksums.sha256",
+  "/proofs/lean/*.lean", "/proofs/lean/Pudding/**", "/proofs/lean/lakefile.toml",
+  "/proofs/lean/lake-manifest.json", "/proofs/lean/lean-toolchain",
+  "/proofs/README.md", "/proofs/scripts/**", "/proofs/spec/**",
+]
+
+[workspace]
+resolver = "2"
+
+[dependencies]

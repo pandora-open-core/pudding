@@ -1,0 +1,6 @@
+/target/
+**/target/
+**/.lake/
+**/__pycache__/
+
+/artifacts/

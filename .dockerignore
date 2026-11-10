@@ -1,0 +1,4 @@
+.git
+**/target
+**/.lake
+**/__pycache__

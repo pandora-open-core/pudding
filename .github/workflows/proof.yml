@@ -1,0 +1,25 @@
+name: Proof release gate
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  formal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.95.0
+        with:
+          components: rustfmt, clippy
+      - run: sh scripts/install-elan.sh
+      - run: echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - run: lake exe cache get
+        working-directory: proofs/lean
+      - run: |
+          mkdir -p release-evidence
+          bash -o pipefail scripts/release-check.sh 2>&1 | tee release-evidence/check.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pudding-proof-evidence
+          path: release-evidence/

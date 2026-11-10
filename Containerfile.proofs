@@ -1,0 +1,21 @@
+# Build and audit the pinned Pudding proof corpus.
+FROM docker.io/library/rust:1.95-slim-bookworm@sha256:d7482085ff5b415f84dba5647ae71606650bdef00db7aeb69f4b3d170c3e4082
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl git python3 zstd \
+    && rm -rf /var/lib/apt/lists/*
+ENV ELAN_HOME=/opt/elan
+ENV PATH=/opt/elan/bin:$PATH
+WORKDIR /workspace/pudding
+COPY elan-version elan-checksums.sha256 ./
+COPY scripts/install-elan.sh ./scripts/install-elan.sh
+RUN sh scripts/install-elan.sh
+COPY proofs/lean/ ./proofs/lean/
+COPY proofs/scripts/check_proofs.py proofs/scripts/check-lean.sh ./proofs/scripts/
+RUN cd proofs/lean && elan toolchain install "$(cat lean-toolchain)" \
+    && lake exe cache get
+COPY scripts/audit-image.sh ./scripts/audit-image.sh
+RUN sh proofs/scripts/check-lean.sh
+RUN chown -R 65532:65532 /workspace/pudding /opt/elan
+USER 65532:65532
+ENV HOME=/tmp
+# Each activation rechecks the image's proof corpus, not a live Inferno process.
+ENTRYPOINT ["sh", "scripts/audit-image.sh"]
